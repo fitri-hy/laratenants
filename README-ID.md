@@ -1,29 +1,29 @@
 # LaraTenants – Multi-Tenant Library for Laravel 12
 
-**LaraTenants** is a **multi-tenant management** library for Laravel 12 that simplifies the development of SaaS applications or multi-tenant platforms.
+**LaraTenants** adalah library **multi-tenant management** untuk Laravel 12 yang memudahkan pengembangan aplikasi SaaS atau platform multi-tenant.
 
-## Key Features
+## Fitur utama
 
-* Wildcard tenant domain `{tenant}.domain.com`
-* Default tenant for fixed domains
-* Tenant-specific databases
-* `tenant` middleware for route isolation
-* Tenant-aware models (`BelongsToTenant` trait)
-* Ready-to-use tenant & user management
-* Sample admin and user dashboards per tenant
+* Wildcard domain tenant `{tenant}.domain.com`
+* Tenant default untuk domain tetap
+* Tenant-specific database
+* Middleware `tenant` untuk route isolation
+* Model tenant-aware (`BelongsToTenant` trait)
+* Tenant & user management siap pakai
+* Contoh dashboard admin & user per tenant
 
 ---
 
-## Installation
+## Instalasi
 
-1. Create a new Laravel 12 project:
+1. Buat project Laravel 12 baru:
 
 ```bash
 composer create-project laravel/laravel multi-tenant-test
 cd multi-tenant-test
 ```
 
-2. Copy the `laratenants` folder into your project and add it as a local repository in `composer.json`:
+2. Salin folder `laratenants` ke dalam project Anda dan tambahkan repository lokal di `composer.json`:
 
 ```json
 "repositories": [
@@ -35,13 +35,13 @@ cd multi-tenant-test
 ]
 ```
 
-3. Install the library:
+3. Install library:
 
 ```bash
 composer require fhylabs/laratenants:dev-main
 ```
 
-4. Configure MySQL in `.env`:
+4. Setup database MySQL di `.env`:
 
 ```env
 DB_CONNECTION=mysql
@@ -52,13 +52,13 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Create the database:
+Buat database MySQL:
 
 ```sql
 CREATE DATABASE multi_tenant_test;
 ```
 
-5. Publish config and migrations:
+5. Publish config & migration:
 
 ```bash
 php artisan vendor:publish --provider="MultiTenant\MultiTenantServiceProvider" --tag=config
@@ -67,37 +67,37 @@ php artisan migrate
 
 ---
 
-## Adding Tenant Domains
+## Menambahkan Domain Tenant
 
-The `laratenants` library uses **tenant domains** to identify the active tenant.
+Library `laratenants` menggunakan **tenant domain** untuk mengidentifikasi tenant aktif.
 
 ### Localhost (Windows)
 
-Edit the `hosts` file:
+Edit file `hosts`:
 
 ```
 C:\Windows\System32\drivers\etc\hosts
 ```
 
-Add entries:
+Tambahkan:
 
 ```
 127.0.0.1 tenant1.local.test
 127.0.0.1 tenant2.local.test
 ```
 
-> For wildcard `{tenant}.local.test`, use specific tenant names such as `abc.local.test`.
+> Untuk wildcard `{tenant}.local.test`, gunakan nama tenant spesifik seperti `abc.local.test`.
 
 ### VPS (Linux/Ubuntu)
 
-Edit `/etc/hosts` (optional for local testing) or use wildcard DNS:
+Edit file `/etc/hosts` (opsional untuk local testing) atau gunakan DNS wildcard:
 
 ```
 127.0.0.1 tenant1.vpsdomain.com
 127.0.0.1 tenant2.vpsdomain.com
 ```
 
-Nginx configuration for wildcard domains:
+Konfigurasi Nginx untuk wildcard:
 
 ```nginx
 server {
@@ -128,24 +128,24 @@ sudo nginx -s reload
 
 ### Shared Hosting (cPanel/DirectAdmin)
 
-1. Add subdomains for each tenant:
+1. Tambahkan subdomain untuk setiap tenant:
 
    * tenant1.domain.com → public_html/project
    * tenant2.domain.com → public_html/project
 
-2. For wildcard tenants, use **Wildcard Subdomain** in cPanel:
+2. Untuk wildcard tenant, gunakan **Wildcard Subdomain** di cPanel:
 
    * Subdomain: `*`
-   * Main domain: `domain.com`
+   * Domain utama: `domain.com`
    * Document root: `/public_html`
 
 ---
 
-## Usage
+## Penggunaan
 
-### Adding Tenants & Users
+### Menambahkan Tenant & User
 
-Open tinker:
+Buka tinker:
 
 ```bash
 php artisan tinker
@@ -155,14 +155,14 @@ php artisan tinker
 use MultiTenant\Models\Tenant;
 use MultiTenant\Models\TenantUser;
 
-// Wildcard tenant
+// Tenant wildcard
 $tenant1 = Tenant::create([
     'name' => 'Tenant 1',
     'domain' => '{tenant}.local.test',
     'database' => 'tenant1_db'
 ]);
 
-// Default tenant
+// Tenant default
 $tenant2 = Tenant::create([
     'name' => 'Tenant 2',
     'domain' => 'tenant2.local.test',
@@ -187,9 +187,9 @@ TenantUser::create([
 
 ---
 
-### Tenant Routes
+### Route Tenant
 
-The `tenant` middleware is automatically available:
+`tenant` middleware otomatis tersedia:
 
 ```php
 use Illuminate\Support\Facades\Route;
@@ -215,7 +215,7 @@ Route::middleware(['tenant'])->group(function () {
 
 ---
 
-### Dashboard Example Views
+### Contoh View Dashboard
 
 **resources/views/tenant/admin-dashboard.blade.php**
 
@@ -250,7 +250,7 @@ Route::middleware(['tenant'])->group(function () {
 
 ---
 
-### Tenant-Aware Model Example
+### Tenant-Aware Model Contoh
 
 ```php
 use Illuminate\Database\Eloquent\Model;
@@ -279,20 +279,20 @@ Tinker test:
 
 ```php
 Post::create([
-    'title' => 'Tenant 1 Article',
-    'content' => 'Content for tenant 1'
+    'title' => 'Artikel Tenant 1',
+    'content' => 'Isi artikel untuk tenant 1'
 ]);
 ```
 
-> The `tenant_id` is automatically set to the active tenant.
+> `tenant_id` otomatis sesuai tenant aktif.
 
 ---
 
-### Running the Server
+### Menjalankan Server
 
 ```bash
 php artisan serve
 ```
 
-* `http://tenant1.local.test:8000` → Active tenant: Tenant 1
-* `http://tenant2.local.test:8000` → Active tenant: Tenant 2
+* `http://tenant1.local.test:8000` → Tenant aktif: Tenant 1
+* `http://tenant2.local.test:8000` → Tenant aktif: Tenant 2
